@@ -1,0 +1,284 @@
+from django.core import validators
+from django.core.validators import RegexValidator
+from django.db import models
+
+from utils.validators import hex_name_color_validator
+
+
+MIN_VALUE_1 = 1
+MAX_LENGTH_7 = 7
+MAX_LENGTH_200 = 200
+VALIDATOR_ERROR_MESSAGE = 'Можно ввести только целое, положительное число'
+
+
+class Ingredient(models.Model):
+    """Ingridient model"""
+
+    name = models.CharField(
+        max_length=MAX_LENGTH_200,
+        verbose_name='Название ингредиента',
+        help_text=(
+            'Введите название ингредиента, '
+            'поле обязательное для заполнения'
+        ),
+        blank=True,
+        db_index=True
+    )
+
+    measurement_unit = models.CharField(
+        max_length=MAX_LENGTH_200,
+        verbose_name='Единица измерения для ингредиента',
+        help_text=(
+            'Введите единицу измерения для ингредиента, '
+            'поле обязательное для заполнения'
+        ),
+        blank=True
+    )
+
+    class Meta:
+        """Ingredient model settings."""
+
+        verbose_name = 'Ингредиент'
+        verbose_name_plural = 'Ингредиенты'
+
+    def __str__(self):
+        """String representation of the class"""
+
+        return self.name
+
+
+class Tag(models.Model):
+    """Tag model"""
+
+    name = models.CharField(
+        max_length=MAX_LENGTH_200,
+        verbose_name='Название тега',
+        help_text=(
+            'Введите тег для рецепта, '
+            'поле обязательное для заполнения, '
+            'поле должно быть уникальным'
+        ),
+        unique=True
+
+    )
+
+    color = models.CharField(
+        validators=[hex_name_color_validator],
+        max_length=MAX_LENGTH_7
+    )
+
+    slug = models.SlugField(
+        validators=[
+            RegexValidator
+            (regex=r'^[\w.@+-]+$',
+             message=(
+                 'Неправильный формат поля'
+                 'Поле может содержать только буквы,'
+                 'цифры и следующие символы: @ . + -'
+             ),
+             code='invalid_field')
+        ],
+        max_length=MAX_LENGTH_200,
+        verbose_name='Slug тега',
+        help_text=(
+            'Введите тег рецепта, '
+            'поле обязательное для заполнения, '
+            'поле должно быть уникальным'
+        ),
+        unique=True,
+        db_index=True
+    )
+
+    class Meta:
+        """User model settings."""
+
+        verbose_name = 'Тег'
+        verbose_name_plural = 'Теги'
+
+    def __str__(self):
+        """String representation of the class"""
+
+        return self.name
+
+
+class Recipe(models.Model):
+    """Recipe model"""
+
+    author = models.ForeignKey(
+        'users.User',
+        on_delete=models.CASCADE,
+        verbose_name='Автор',
+        help_text=(
+            'Введите автора рецепта, '
+            'поле обязательное для заполнения'
+        ),
+        blank=True
+    )
+
+    ingredients = models.ManyToManyField(
+        Ingredient,
+        through='RecipeIngredient',
+        related_name='RecipeIngredients',
+        verbose_name='Список ингредиентов',
+        help_text=(
+            'Введите ингредиенты, '
+            'поле обязательное для заполнения'
+        ),
+        blank=True,
+        db_index=True
+    )
+
+    tags = models.ManyToManyField(
+        Tag,
+        through='RecipeTag',
+        related_name='RecipeTag',
+        verbose_name='Список тегов',
+        help_text=(
+            'Введите тег, '
+            'поле обязательное для заполнения'
+        ),
+        blank=True,
+        db_index=True
+    )
+
+    image = models.ImageField(
+        upload_to='cats/images/',
+        null=False,
+        default=None,
+    )
+
+    name = models.CharField(
+        max_length=200,
+        verbose_name='Название рецепта',
+        help_text=(
+            'Введите название рецепта, '
+            'поле обязательное для заполнения'
+        ),
+        blank=True
+
+    )
+
+    text = models.TextField(
+        verbose_name='Описание рецепта',
+        help_text=(
+            'Введите описание рецепта,'
+            'поле обязательное для заполнения'
+        )
+    )
+
+    cooking_time = models.IntegerField(
+        verbose_name='Время приготовления',
+        help_text=(
+            'Введите время приготовления рецепта в минутах,'
+            'можно ввести только целое число, '
+            'поле обязательное для заполнения'
+        ),
+        validators=[
+            validators.MinValueValidator(
+                MIN_VALUE_1,
+                VALIDATOR_ERROR_MESSAGE
+            )
+        ],
+        blank=True,
+        null=False
+    )
+
+    pub_date = models.DateField(
+        auto_now=True,
+    )
+
+    class Meta:
+        """User model settings."""
+
+        verbose_name = 'Рецепт'
+        verbose_name_plural = 'Рецепты'
+
+    def __str__(self) -> str:
+        """String representation of the class"""
+
+        return self.name
+
+
+class RecipeIngredient(models.Model):
+    """Model for linking models Recipe and Ingridient"""
+
+    recipe = models.ForeignKey(
+        Recipe,
+        on_delete=models.CASCADE,
+        db_index=True
+    )
+
+    ingredient = models.ForeignKey(
+        Ingredient,
+        on_delete=models.CASCADE,
+        db_index=True
+    )
+
+    amount = models.IntegerField(
+        verbose_name='Количество ингредиента',
+        help_text=(
+            'Введите количество ингредиента,'
+            'можно ввести только целое число, '
+            'поле обязательное для заполнения'
+        ),
+        validators=[
+            validators.MinValueValidator(
+                MIN_VALUE_1,
+                VALIDATOR_ERROR_MESSAGE
+            )
+        ],
+        blank=True,
+        null=False
+    )
+
+    class Meta:
+        """RecipeIngredient model settings."""
+
+        constraints = [
+                models.UniqueConstraint(
+                    fields=['recipe', 'ingredient'],
+                    name='unique_recipe_ingredient'
+                )
+            ]
+
+        verbose_name = 'Ингредиент рецепта'
+        verbose_name_plural = 'Ингредиенты рецепта'
+
+    def __str__(self) -> str:
+        """String representation of the class"""
+
+        return f'Рецепт {self.recipe} с ингредиентом {self.ingredient}'
+
+
+class RecipeTag(models.Model):
+    """Model for linking models Recipe and Tag"""
+
+    recipe = models.ForeignKey(
+        Recipe,
+        on_delete=models.CASCADE,
+        db_index=True
+    )
+
+    tag = models.ForeignKey(
+        Tag,
+        on_delete=models.CASCADE,
+        db_index=True
+    )
+
+    class Meta:
+        """RecipeTag model settings."""
+
+        constraints = [
+                models.UniqueConstraint(
+                    fields=['recipe', 'tag'],
+                    name='unique_recipe_tag'
+                )
+            ]
+
+        verbose_name = 'Тег рецепта'
+        verbose_name_plural = 'Тег рецептов'
+
+    def __str__(self) -> str:
+        """String representation of the class"""
+
+        return f'Рецепт {self.recipe} с тегом {self.tag}'
