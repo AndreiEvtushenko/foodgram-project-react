@@ -312,12 +312,18 @@ class DownloadShoppingCartView(APIView):
             shopping_cart_content += f"Recipe: {recipe.name}\n"
             shopping_cart_content += "Ingredients:\n"
             for ingredient in recipe.ingredients.all():
-                shopping_cart_content += f" - {ingredient.name} ({ingredient.measurement_unit})\n"
-            shopping_cart_content += f"Cooking Time: {recipe.cooking_time} minutes\n"
+                shopping_cart_content += (
+                    f" - {ingredient.name} ({ingredient.measurement_unit})\n"
+                )
+            shopping_cart_content += (
+                f"Cooking Time: {recipe.cooking_time} minutes\n"
+            )
             shopping_cart_content += f"Description: {recipe.text}\n\n"
 
         response = HttpResponse(content_type='text/plain')
-        response['Content-Disposition'] = 'attachment; filename="shopping_cart.txt"'
+        response['Content-Disposition'] = (
+            'attachment; filename="shopping_cart.txt"'
+        )
         response.write(shopping_cart_content)
         return response
 

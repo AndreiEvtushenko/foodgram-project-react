@@ -76,7 +76,7 @@ class UserGetSerializer(serializers.ModelSerializer):
 
         request = self.context.get('request')
         user = request.user
-    
+
         if user.is_authenticated:
             return Subscription.objects.filter(user=user, author=obj).exists()
 
@@ -102,7 +102,7 @@ class UserCreateSerializer(serializers.ModelSerializer):
         """Method for validating a field while saving the user's password"""
 
         try:
-            password_slug_validation(value)
+            password_slug_username_validation(value)
         except serializers.ValidationError as validation_error:
             raise serializers.ValidationError(str(validation_error))
 
@@ -125,7 +125,7 @@ class UserListRetrieveSerializer(serializers.ModelSerializer):
 
 class SubscriptionSerializer(serializers.ModelSerializer):
     """
-    Serializer for processing GET 
+    Serializer for processing GET
     request from the SubscriptionViewSet.
     """
 

@@ -172,11 +172,11 @@ class UserFavorite(models.Model):
         """
 
         constraints = [
-                models.UniqueConstraint(
-                    fields=['user', 'recipe'],
-                    name='unique_user_favorite_recipe'
-                )
-            ]
+            models.UniqueConstraint(
+                fields=['user', 'recipe'],
+                name='unique_user_favorite_recipe'
+            )
+        ]
 
         ordering = ['pub_date', ]
         verbose_name = 'Избранные'
@@ -216,11 +216,11 @@ class UserShoppingCart(models.Model):
         """
 
         constraints = [
-                models.UniqueConstraint(
-                    fields=['user', 'recipe'],
-                    name='unique_user_shopping_cart_recipe'
-                )
-            ]
+            models.UniqueConstraint(
+                fields=['user', 'recipe'],
+                name='unique_user_shopping_cart_recipe'
+            )
+        ]
 
         ordering = ['pub_date', ]
         verbose_name = 'Список покупок'

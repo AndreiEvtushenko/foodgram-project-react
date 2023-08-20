@@ -235,11 +235,11 @@ class RecipeIngredient(models.Model):
         """RecipeIngredient model settings."""
 
         constraints = [
-                models.UniqueConstraint(
-                    fields=['recipe', 'ingredient'],
-                    name='unique_recipe_ingredient'
-                )
-            ]
+            models.UniqueConstraint(
+                fields=['recipe', 'ingredient'],
+                name='unique_recipe_ingredient'
+            )
+        ]
 
         verbose_name = 'Ингредиент рецепта'
         verbose_name_plural = 'Ингредиенты рецепта'

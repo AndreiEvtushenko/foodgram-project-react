@@ -70,8 +70,6 @@ class RecipeAdmin(admin.ModelAdmin):
         'image',
         'text',
         'cooking_time',
-        #'is_favorited',
-        #'is_in_shopping_cart',
         'pub_date'
     )
 

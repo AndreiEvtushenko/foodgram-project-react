@@ -16,7 +16,7 @@ class RecipeFilterSet(filters.FilterSet):
     is_in_shopping_cart = filters.NumberFilter(
         field_name='user_shopping_cart_recipe__user',
         method='filter_is_in_shopping_cart'
-        )
+    )
     tags = filters.CharFilter(field_name='tags__slug')
     author = filters.NumberFilter(field_name='author__id')
 
