@@ -34,7 +34,7 @@ class User(AbstractUser):
         help_text=(
             'Введите адрес электронной почты, '
             'поле обязательное для заполнения'
-            ),
+        ),
         blank=False,
         max_length=MAX_LENGTH_254,
         validators=[EmailValidator],
@@ -120,11 +120,11 @@ class Subscription(models.Model):
         """
 
         constraints = [
-                models.UniqueConstraint(
-                    fields=['user', 'author'],
-                    name='unique_user_subscription_author'
-                )
-            ]
+            models.UniqueConstraint(
+                fields=['user', 'author'],
+                name='unique_user_subscription_author'
+            )
+        ]
 
         ordering = ['user', ]
         verbose_name = 'Подписка'

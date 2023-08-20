@@ -269,11 +269,11 @@ class RecipeTag(models.Model):
         """RecipeTag model settings."""
 
         constraints = [
-                models.UniqueConstraint(
-                    fields=['recipe', 'tag'],
-                    name='unique_recipe_tag'
-                )
-            ]
+            models.UniqueConstraint(
+                fields=['recipe', 'tag'],
+                name='unique_recipe_tag'
+            )
+        ]
 
         verbose_name = 'Тег рецепта'
         verbose_name_plural = 'Тег рецептов'
