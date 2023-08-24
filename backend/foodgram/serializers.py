@@ -124,6 +124,10 @@ class RecipeSerializer(serializers.ModelSerializer):
 
         request = self.context.get('request')
         user = request.user
+
+        if user.is_anonymous:
+            return False
+
         is_favorited = UserFavorite.objects.filter(user=user, recipe=obj)
 
         if is_favorited:
@@ -138,6 +142,10 @@ class RecipeSerializer(serializers.ModelSerializer):
 
         request = self.context.get('request')
         user = request.user
+
+        if user.is_anonymous:
+            return False
+
         is_in_shopping_cart = UserShoppingCart.objects.filter(
             user=user, recipe=obj
         )

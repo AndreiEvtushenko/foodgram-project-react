@@ -142,7 +142,7 @@ class Recipe(models.Model):
     )
 
     image = models.ImageField(
-        upload_to='cats/images/',
+        upload_to='foodgram/images/',
         null=False,
         default=None,
     )

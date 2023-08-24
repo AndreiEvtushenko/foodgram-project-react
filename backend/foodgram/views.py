@@ -2,11 +2,11 @@ from django.contrib.auth import get_user_model
 from django_filters.rest_framework import DjangoFilterBackend
 
 from rest_framework import viewsets
-from rest_framework.permissions import AllowAny, IsAdminUser, IsAuthenticated
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
-from foodgram.filters import RecipeFilterSet
-from foodgram.permissions import ChangeObjectIfAuthor
+from foodgram.filters import IngredientFilterSet, RecipeFilterSet
+from foodgram.permissions import ChangeObjectIfAuthorOrAdmin
 from foodgram.utils.save_ingredients import save_ingredients_for_resipe
 from foodgram.utils.save_tags import save_tags_for_recipes
 from foodgram.serializers import (
@@ -28,6 +28,9 @@ class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
     """
 
     serializer_class = IngredientSerializer
+    filter_backends = (DjangoFilterBackend,)
+    filterset_class = IngredientFilterSet
+    permission_classes = [AllowAny, ]
     queryset = Ingredient.objects.all()
     pagination_class = None
 
@@ -40,7 +43,7 @@ class TagViewSet(viewsets.ReadOnlyModelViewSet):
     """
 
     queryset = Tag.objects.all()
-    permission_classes = [IsAuthenticated, ]
+    permission_classes = [AllowAny, ]
     serializer_class = TagSerializer
     pagination_class = None
 
@@ -58,13 +61,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
     serializer_class = RecipeSerializer
     filter_backends = (DjangoFilterBackend,)
     filterset_class = RecipeFilterSet
-
-    def get_permissions(self):
-        """Selecting a permissions depending on the request"""
-
-        if self.action in ['retrieve', 'list']:
-            return [AllowAny()]
-        return [ChangeObjectIfAuthor(), IsAdminUser()]
+    permission_classes = [ChangeObjectIfAuthorOrAdmin, ]
 
     def perform_create(self, serializer):
         """Method creates a recipe with ingredients and tags"""

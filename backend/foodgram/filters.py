@@ -1,6 +1,6 @@
 from django_filters import rest_framework as filters
 
-from foodgram.models import Recipe
+from foodgram.models import Ingredient, Recipe
 
 
 class RecipeFilterSet(filters.FilterSet):
@@ -21,7 +21,7 @@ class RecipeFilterSet(filters.FilterSet):
     author = filters.NumberFilter(field_name='author__id')
 
     class Meta:
-        """Subscription model settings. """
+        """Fields settings."""
 
         model = Recipe
         fields = ('author', 'tags', 'is_in_shopping_cart', 'is_favorited')
@@ -43,3 +43,20 @@ class RecipeFilterSet(filters.FilterSet):
                 user_shopping_cart_recipe__user=self.request.user
             )
         return queryset
+
+
+class IngredientFilterSet(filters.FilterSet):
+    """Custom filterset for filtering by name."""
+
+    name = filters.CharFilter(field_name='name', method='filter_name')
+
+    def filter_name(self, queryset, name, value):
+        """Method for filtering by partial occurrence."""
+
+        return queryset.filter(name__istartswith=value)
+
+    class Meta:
+        """Fields settings."""
+
+        model = Ingredient
+        fields = ('name', )
