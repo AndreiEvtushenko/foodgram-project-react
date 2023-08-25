@@ -90,7 +90,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
         if tags_data:
             recipe.tags.clear()
-            save_ingredients_for_resipe(ingredients_data, recipe)
+            save_tags_for_recipes(tags_data, recipe)
 
         serializer = self.get_serializer(
             recipe, data=request.data, partial=True)
