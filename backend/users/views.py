@@ -311,10 +311,15 @@ class DownloadShoppingCartView(APIView):
             recipe = recipe_cart.recipe
             shopping_cart_content += f"Recipe: {recipe.name}\n"
             shopping_cart_content += "Ingredients:\n"
-            for ingredient in recipe.ingredients.all():
-                recipe_ingredient = recipe.recipeingredient_set.first().amount
+            #for ingredient in recipe.ingredients.all():
+            #    recipe_ingredient = recipe.recipeingredient_set.first().amount
+            #    shopping_cart_content += (
+            #        f" - {ingredient.name} {recipe_ingredient} {ingredient.measurement_unit}\n"
+            #    )
+            for recipe_ingredient in recipe.recipeingredient_set.all():  # Получаем все связанные объекты RecipeIngredient
+                ingredient = recipe_ingredient.ingredient
                 shopping_cart_content += (
-                    f" - {ingredient.name} {recipe_ingredient} {ingredient.measurement_unit}\n"
+                    f" - {ingredient.name} {recipe_ingredient.amount} {ingredient.measurement_unit}\n"
                 )
             shopping_cart_content += (
                 f"Cooking Time: {recipe.cooking_time} minutes\n"
