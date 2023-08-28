@@ -3,6 +3,7 @@ from django.db import transaction
 from django_filters.rest_framework import DjangoFilterBackend
 
 from rest_framework import viewsets
+from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
@@ -60,6 +61,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     queryset = Recipe.objects.all()
     serializer_class = RecipeSerializer
+    pagination_class = LimitOffsetPagination
     filter_backends = (DjangoFilterBackend,)
     filterset_class = RecipeFilterSet
     permission_classes = [ChangeObjectIfAuthorOrAdmin, ]
