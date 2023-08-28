@@ -128,7 +128,8 @@ class RecipeSerializer(serializers.ModelSerializer):
         if user.is_anonymous:
             return False
 
-        is_favorited = UserFavorite.objects.filter(user=user, recipe=obj)
+        is_favorited = UserFavorite.objects.filter(
+            user=user, recipe=obj).exists()
 
         return is_favorited
 
@@ -145,7 +146,6 @@ class RecipeSerializer(serializers.ModelSerializer):
             return False
 
         is_in_shopping_cart = UserShoppingCart.objects.filter(
-            user=user, recipe=obj
-        )
+            user=user, recipe=obj).exists()
 
         return is_in_shopping_cart

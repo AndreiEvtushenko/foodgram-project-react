@@ -6,7 +6,7 @@ db_params = {
     'user': 'django_user',
     'password': 'mysecretpassword',
     #'host': '172.24.0.3',
-    'host': '172.21.0.3',
+    'host': '172.23.0.2',
     'port': '5432',
 }
 
