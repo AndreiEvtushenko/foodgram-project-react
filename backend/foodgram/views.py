@@ -7,8 +7,8 @@ from rest_framework.response import Response
 
 from foodgram.filters import IngredientFilterSet, RecipeFilterSet
 from foodgram.permissions import ChangeObjectIfAuthorOrAdmin
-from foodgram.utils.save_ingredients import save_ingredients_for_resipe
-from foodgram.utils.save_tags import save_tags_for_recipes
+from foodgram.utils.save_ingredients import save_ingredients_for_recipe
+from foodgram.utils.save_tags import save_tags_for_recipe
 from foodgram.serializers import (
     IngredientSerializer,
     RecipeSerializer,
@@ -72,10 +72,10 @@ class RecipeViewSet(viewsets.ModelViewSet):
         tags_data = self.request.data.get('tags')
 
         if ingredients_data:
-            save_ingredients_for_resipe(ingredients_data, recipe)
+            save_ingredients_for_recipe(ingredients_data, recipe)
 
         if tags_data:
-            save_tags_for_recipes(tags_data, recipe)
+            save_tags_for_recipe(tags_data, recipe)
 
     def partial_update(self, request, *args, **kwargs):
         """Method changes a recipe with ingredients and tags"""
@@ -86,11 +86,11 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
         if ingredients_data:
             recipe.ingredients.clear()
-            save_ingredients_for_resipe(ingredients_data, recipe)
+            save_ingredients_for_recipe(ingredients_data, recipe)
 
         if tags_data:
             recipe.tags.clear()
-            save_tags_for_recipes(tags_data, recipe)
+            save_tags_for_recipe(tags_data, recipe)
 
         serializer = self.get_serializer(
             recipe, data=request.data, partial=True)
