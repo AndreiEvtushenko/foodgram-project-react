@@ -1,4 +1,4 @@
-from foodgram.models import Ingredient, RecipeIngredient
+from foodgram.models import RecipeIngredient
 
 
 def save_ingredients_for_recipe(ingredients_data, recipe):
@@ -7,9 +7,6 @@ def save_ingredients_for_recipe(ingredients_data, recipe):
     recipe_ingredients_to_create = []
 
     for ingredient_data in ingredients_data:
-        # ingredient_id = ingredient_data.get('id')
-        # ingredient = Ingredient.objects.get(id=ingredient_id)
-        # ingredient_amount = ingredient_data.get('amount')
 
         recipe_ingredients_to_create.append(
             RecipeIngredient(

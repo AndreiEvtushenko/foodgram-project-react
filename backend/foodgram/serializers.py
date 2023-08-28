@@ -130,9 +130,7 @@ class RecipeSerializer(serializers.ModelSerializer):
 
         is_favorited = UserFavorite.objects.filter(user=user, recipe=obj)
 
-        if is_favorited:
-            return True
-        return False
+        return is_favorited
 
     def get_is_in_shopping_cart(self, obj):
         """
@@ -150,6 +148,4 @@ class RecipeSerializer(serializers.ModelSerializer):
             user=user, recipe=obj
         )
 
-        if is_in_shopping_cart:
-            return True
-        return False
+        return is_in_shopping_cart

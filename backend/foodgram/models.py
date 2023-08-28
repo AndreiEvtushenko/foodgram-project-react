@@ -8,7 +8,15 @@ from utils.validators import hex_name_color_validator
 MIN_VALUE_1 = 1
 MAX_LENGTH_7 = 7
 MAX_LENGTH_200 = 200
-VALIDATOR_ERROR_MESSAGE = 'Можно ввести только целое, положительное число'
+MAX_VALUE_1440 = 1440
+MAX_VALUE_10000 = 10000
+MIN_VALIDATOR_ERROR_MESSAGE = 'Можно ввести только целое, положительное число'
+MAX_VALIDATOR_ERROR_MESSAGE = (
+    'Максимальное время приготовления не может превышать 1440 минут'
+)
+MAX_VALIDATOR_AMOUNT_ERROR_MESSAGE = (
+    'Максимальное значение не должно превышать 10000'
+)
 
 
 class Ingredient(models.Model):
@@ -37,6 +45,13 @@ class Ingredient(models.Model):
 
     class Meta:
         """Ingredient model settings."""
+
+        constraints = [
+            models.UniqueConstraint(
+                fields=['name', 'measurement_unit'],
+                name='unique_name_measurement_unit'
+            )
+        ]
 
         verbose_name = 'Ингредиент'
         verbose_name_plural = 'Ингредиенты'
@@ -176,11 +191,13 @@ class Recipe(models.Model):
         validators=[
             validators.MinValueValidator(
                 MIN_VALUE_1,
-                VALIDATOR_ERROR_MESSAGE
+                MIN_VALIDATOR_ERROR_MESSAGE
+            ),
+            validators.MaxValueValidator(
+                MAX_VALUE_1440,
+                MAX_VALIDATOR_ERROR_MESSAGE
             )
-        ],
-        blank=True,
-        null=False
+        ]
     )
 
     pub_date = models.DateField(
@@ -224,11 +241,13 @@ class RecipeIngredient(models.Model):
         validators=[
             validators.MinValueValidator(
                 MIN_VALUE_1,
-                VALIDATOR_ERROR_MESSAGE
+                MIN_VALIDATOR_ERROR_MESSAGE
+            ),
+            validators.MaxValueValidator(
+                MAX_VALUE_10000,
+                MAX_VALIDATOR_AMOUNT_ERROR_MESSAGE
             )
-        ],
-        blank=True,
-        null=False
+        ]
     )
 
     class Meta:

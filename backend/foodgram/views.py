@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from django.db import transaction
 from django_filters.rest_framework import DjangoFilterBackend
 
 from rest_framework import viewsets
@@ -63,6 +64,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
     filterset_class = RecipeFilterSet
     permission_classes = [ChangeObjectIfAuthorOrAdmin, ]
 
+    @transaction.atomic
     def perform_create(self, serializer):
         """Method creates a recipe with ingredients and tags"""
 
@@ -77,6 +79,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         if tags_data:
             save_tags_for_recipe(tags_data, recipe)
 
+    @transaction.atomic
     def partial_update(self, request, *args, **kwargs):
         """Method changes a recipe with ingredients and tags"""
 
