@@ -121,3 +121,5 @@ MEDIA_ROOT = BASE_DIR / '/media/foodgram/images/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CORS_ALLOW_ALL_ORIGINS = True
+
+CSRF_TRUSTED_ORIGINS = ['https://*.foodgramassistant.ddns.net//', 'http://*.foodgramassistant.ddns.net/']
