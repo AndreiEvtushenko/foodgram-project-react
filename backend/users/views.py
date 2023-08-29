@@ -309,19 +309,20 @@ class DownloadShoppingCartView(APIView):
 
         for recipe_cart in shopping_list:
             recipe = recipe_cart.recipe
-            shopping_cart_content += f"Recipe: {recipe.name}\n"
-            shopping_cart_content += "Ingredients:\n"
+            shopping_cart_content += f'Recipe: {recipe.name}\n'
+            shopping_cart_content += 'Ingredients:\n'
 
             for recipe_ingredient in recipe.recipeingredient_set.all():
                 ingredient = recipe_ingredient.ingredient
                 shopping_cart_content += (
-                    f" - {ingredient.name} {recipe_ingredient.amount} {ingredient.measurement_unit}\n"
+                    f' - {ingredient.name} {recipe_ingredient.amount}'
+                    f'{ingredient.measurement_unit}\n'
                 )
 
             shopping_cart_content += (
-                f"Cooking Time: {recipe.cooking_time} minutes\n"
+                f'Cooking Time: {recipe.cooking_time} minutes\n'
             )
-            shopping_cart_content += f"Description: {recipe.text}\n\n"
+            shopping_cart_content += f'Description: {recipe.text}\n\n'
 
         response = HttpResponse(content_type='text/plain')
         response['Content-Disposition'] = (
