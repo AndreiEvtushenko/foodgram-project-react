@@ -4,6 +4,7 @@
 
 Адрес сайта:  
 https://foodgramassistant.ddns.net/
+Вход в админку admin и admin.
 
 ### Описание
 

@@ -20,7 +20,6 @@ from users.views import (
     SubscriptionViewSet,
 )
 
-
 router = routers.DefaultRouter()
 
 router.register('tags', TagViewSet, basename='tags')
