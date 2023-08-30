@@ -1,4 +1,5 @@
 from django.core import validators
+from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
 from django.db import models
 
@@ -210,6 +211,14 @@ class Recipe(models.Model):
 
         verbose_name = 'Рецепт'
         verbose_name_plural = 'Рецепты'
+    
+    def clean(self):
+        if not self.tags.exists() or not self.ingredients.exists():
+            raise ValidationError('Необходимо выбрать минимум один тег и один ингредиент.')
+
+    def save(self, *args, **kwargs):
+        self.clean()  # Применяем проверку перед сохранением
+        super().save(*args, **kwargs)
 
     def __str__(self) -> str:
         """String representation of the class"""
