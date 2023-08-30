@@ -1,3 +1,4 @@
+from django import forms
 from django.contrib import admin
 from django.core.exceptions import ValidationError
 
@@ -59,8 +60,35 @@ class TagAdmin(admin.ModelAdmin):
     empty_value_display = 'пусто'
 
 
+class CustomRecipeForm(forms.ModelForm):
+    """Set"""
+
+    class Meta:
+        """Set"""
+
+        model = Recipe
+        fields = (
+            'pk',
+            'author',
+            'name',
+            'display_ingredient',
+            'display_tag',
+            'image',
+            'text',
+            'cooking_time',
+            'pub_date'
+        )
+
+    def clean(self):
+        cleaned_data = super().clean()
+        if not cleaned_data['tags'].exists() or not cleaned_data['ingredients'].exists():
+            raise ValidationError('Необходимо выбрать минимум один тег и один ингредиент.')
+
+
 class RecipeAdmin(admin.ModelAdmin):
     """Recipe model settings in admin"""
+
+    form = CustomRecipeForm
 
     list_display = (
         'pk',
