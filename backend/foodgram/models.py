@@ -222,6 +222,12 @@ class Recipe(models.Model):
             raise ValidationError('Нужно выбрать минимум один тег.')
         if not self.ingredients.all().exists():
             raise ValidationError('Нужно выбрать минимум один ингредиент.')
+    
+    def save(self, *args, **kwargs):
+        if not self.tags.exists() or not self.ingredients.exists():
+            raise ValidationError('Необходимо выбрать минимум один тег и один ингредиент.')
+        
+        super().save(*args, **kwargs)
 
     def __str__(self) -> str:
         """String representation of the class"""
