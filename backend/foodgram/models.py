@@ -140,7 +140,7 @@ class Recipe(models.Model):
             'Введите ингредиенты, '
             'поле обязательное для заполнения'
         ),
-        blank=True,
+        blank=False,
         db_index=True
     )
 
@@ -153,7 +153,7 @@ class Recipe(models.Model):
             'Введите тег, '
             'поле обязательное для заполнения'
         ),
-        blank=True,
+        blank=False,
         db_index=True
     )
 
