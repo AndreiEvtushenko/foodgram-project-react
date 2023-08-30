@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.core.exceptions import ValidationError
 
 from foodgram.models import (
     Ingredient,
@@ -91,13 +92,11 @@ class RecipeAdmin(admin.ModelAdmin):
         tags = obj.tags.all()
         return ', '.join([str(tag) for tag in tags])
 
-    def save_model(self, request, obj, form, change):
+    def clean(self, obj):
         if not obj.tags.exists():
-            raise ValueError('Нужно выбрать минимум один тег.')
+            raise ValidationError({'tags': ['Нужно выбрать минимум один тег.']})
         if not obj.ingredients.exists():
-            raise ValueError('Нужно выбрать минимум один ингредиент.')
-
-        super().save_model(request, obj, form, change)
+            raise ValidationError({'ingredients': ['Нужно выбрать минимум один ингредиент.']})
 
     display_ingredient.short_description = 'Ингредиенты'
     display_tag.short_description = 'Теги'
