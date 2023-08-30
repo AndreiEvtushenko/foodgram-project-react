@@ -91,6 +91,14 @@ class RecipeAdmin(admin.ModelAdmin):
         tags = obj.tags.all()
         return ', '.join([str(tag) for tag in tags])
 
+    def save_model(self, request, obj, form, change):
+        if not obj.tags.exists():
+            raise ValueError('Нужно выбрать минимум один тег.')
+        if not obj.ingredients.exists():
+            raise ValueError('Нужно выбрать минимум один ингредиент.')
+
+        super().save_model(request, obj, form, change)
+
     display_ingredient.short_description = 'Ингредиенты'
     display_tag.short_description = 'Теги'
     list_display_links = ('name',)
