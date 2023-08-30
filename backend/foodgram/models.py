@@ -20,6 +20,11 @@ MAX_VALIDATOR_AMOUNT_ERROR_MESSAGE = (
 )
 
 
+def validate_non_empty(value):
+    if value.count() == 0:
+        raise ValidationError('Поле не может быть пустым.')
+
+
 class Ingredient(models.Model):
     """Ingridient model"""
 
@@ -146,6 +151,7 @@ class Recipe(models.Model):
 
     tags = models.ManyToManyField(
         Tag,
+        validators=[validate_non_empty],
         through='RecipeTag',
         related_name='RecipeTag',
         verbose_name='Список тегов',
