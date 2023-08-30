@@ -1,5 +1,4 @@
 from django.core import validators
-from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
 from django.db import models
 
@@ -18,11 +17,6 @@ MAX_VALIDATOR_ERROR_MESSAGE = (
 MAX_VALIDATOR_AMOUNT_ERROR_MESSAGE = (
     'Максимальное значение не должно превышать 10000'
 )
-
-
-def validate_non_empty(value):
-    if value.count() == 0:
-        raise ValidationError('Поле не может быть пустым.')
 
 
 class Ingredient(models.Model):
@@ -145,13 +139,12 @@ class Recipe(models.Model):
             'Введите ингредиенты, '
             'поле обязательное для заполнения'
         ),
-        blank=False,
+        blank=True,
         db_index=True
     )
 
     tags = models.ManyToManyField(
         Tag,
-        validators=[validate_non_empty],
         through='RecipeTag',
         related_name='RecipeTag',
         verbose_name='Список тегов',
@@ -160,7 +153,8 @@ class Recipe(models.Model):
             'поле обязательное для заполнения'
         ),
         blank=False,
-        db_index=True
+        db_index=True,
+        null=False
     )
 
     image = models.ImageField(
@@ -216,18 +210,6 @@ class Recipe(models.Model):
 
         verbose_name = 'Рецепт'
         verbose_name_plural = 'Рецепты'
-    
-    def clean(self):
-        if not self.tags.all().exists():
-            raise ValidationError('Нужно выбрать минимум один тег.')
-        if not self.ingredients.all().exists():
-            raise ValidationError('Нужно выбрать минимум один ингредиент.')
-    
-    def save(self, *args, **kwargs):
-        if not self.tags.exists() or not self.ingredients.exists():
-            raise ValidationError('Необходимо выбрать минимум один тег и один ингредиент.')
-        
-        super().save(*args, **kwargs)
 
     def __str__(self) -> str:
         """String representation of the class"""
