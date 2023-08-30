@@ -92,11 +92,11 @@ class RecipeAdmin(admin.ModelAdmin):
         tags = obj.tags.all()
         return ', '.join([str(tag) for tag in tags])
 
-    def clean(self, obj):
-        if not obj.tags.exists():
-            raise ValidationError({'tags': ['Нужно выбрать минимум один тег.']})
-        if not obj.ingredients.exists():
-            raise ValidationError({'ingredients': ['Нужно выбрать минимум один ингредиент.']})
+     def formfield_for_manytomany(self, db_field, request, **kwargs):
+        if db_field.name == "tags" or db_field.name == "ingredients":
+            kwargs["required"] = True
+
+        return super().formfield_for_manytomany(db_field, request, **kwargs)
 
     display_ingredient.short_description = 'Ингредиенты'
     display_tag.short_description = 'Теги'
