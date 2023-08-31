@@ -1,6 +1,4 @@
-from django import forms
 from django.contrib import admin
-from django.core.exceptions import ValidationError
 
 from foodgram.models import (
     Ingredient,
@@ -60,35 +58,8 @@ class TagAdmin(admin.ModelAdmin):
     empty_value_display = 'пусто'
 
 
-class CustomRecipeForm(forms.ModelForm):
-    """Set"""
-
-    class Meta:
-        """Set"""
-
-        model = Recipe
-        fields = (
-            'pk',
-            'author',
-            'name',
-            'display_ingredient',
-            'display_tag',
-            'image',
-            'text',
-            'cooking_time',
-            'pub_date'
-        )
-
-    def clean(self):
-        cleaned_data = super().clean()
-        if not cleaned_data['tags'].exists() or not cleaned_data['ingredients'].exists():
-            raise ValidationError('Необходимо выбрать минимум один тег и один ингредиент.')
-
-
 class RecipeAdmin(admin.ModelAdmin):
     """Recipe model settings in admin"""
-
-    form = CustomRecipeForm
 
     list_display = (
         'pk',
@@ -119,24 +90,6 @@ class RecipeAdmin(admin.ModelAdmin):
 
         tags = obj.tags.all()
         return ', '.join([str(tag) for tag in tags])
-    
-    def save_model(self, request, obj, form, change):
-        """
-        Override user model save method,
-        to properly hash the password before storing.
-        """
-
-        if not obj.ingredients and not obj.tags:
-            raise ValidationError('Нужно выбрать минимум один тег и один ингредиент.')
-
-        super().save_model(request, obj, form, change)
-    
-    def save_related(self, request, form, formsets, change):
-        super().save_related(request, form, formsets, change)
-        
-        recipe = form.instance
-        if not recipe.tags.exists() or not recipe.ingredients.exists():
-            raise ValueError('Нужно выбрать минимум один тег и один ингредиент.')
 
     display_ingredient.short_description = 'Ингредиенты'
     display_tag.short_description = 'Теги'
